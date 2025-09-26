@@ -1,0 +1,161 @@
+meta {
+  name: Advanced Analytics
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{api_base_url}}/{{api_version}}/products/analytics?period={{period}}&metrics={{metrics}}
+  body: none
+  auth: bearer
+}
+
+params:query {
+  period: 30d
+  metrics: sales,views,revenue
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+vars:pre-request {
+  period: 30d
+  metrics: sales,views,revenue
+}
+
+script:pre-request {
+  // Charger TOUS les utilitaires (globaux + avancés)
+  require('../../scripts/global-setup.js');
+  const advancedUtils = require('../../libs/advanced-utils.js');
+  
+  // Mesurer le temps de début
+  const startTime = Date.now();
+  bru.setVar('request_start_time', startTime);
+  
+  // Générer des données de test pour comparaison
+  const testData = advancedUtils.generateTestDataSet('products', 3);
+  bru.setVar('test_products', JSON.stringify(testData));
+  
+  const requestCount = utils.incrementRequestCount();
+  const period = bru.getVar('period');
+  const metrics = bru.getVar('metrics');
+  
+  utils.log('Advanced analytics request', {
+    requestCount: requestCount,
+    period: period,
+    metrics: metrics,
+    testDataGenerated: testData.length
+  });
+  
+  // Utiliser lodash-like functions
+  const requestMeta = {
+    'request.id': utils.generateUUID(),
+    'request.timestamp': utils.formatDate(new Date()),
+    'request.user': global.sharedVars.currentUser?.id || 'anonymous',
+    'request.type': 'analytics'
+  };
+  
+  // Stocker les métadonnées avec lodash
+  Object.keys(requestMeta).forEach(key => {
+    advancedUtils._.set(global.sharedVars, key, requestMeta[key]);
+  });
+}
+
+script:post-response {
+  const advancedUtils = require('../../libs/advanced-utils.js');
+  
+  // Mesurer le temps de réponse
+  const startTime = parseInt(bru.getVar('request_start_time'));
+  const responseTime = Date.now() - startTime;
+  
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  
+  // Traiter la réponse avec le schéma avancé
+  const schema = {
+    totalSales: 'data.sales.total',
+    totalViews: 'data.views.total',
+    revenue: 'data.revenue.amount',
+    period: 'meta.period',
+    generatedAt: 'meta.timestamp'
+  };
+  
+  const processedData = advancedUtils.processApiResponse(response, schema);
+  
+  utils.log('Advanced analytics response processed', {
+    status: status,
+    responseTime: `${responseTime}ms`,
+    extractedFields: Object.keys(processedData.extractedData).length
+  });
+  
+  // Validation avancée
+  expect(status).to.equal(200);
+  expect(response).to.have.property('data');
+  
+  // Utiliser les fonctions lodash pour validation
+  const salesData = advancedUtils._.get(response, 'data.sales');
+  const viewsData = advancedUtils._.get(response, 'data.views');
+  
+  if (salesData) {
+    expect(salesData).to.have.property('total');
+    expect(typeof salesData.total).to.equal('number');
+  }
+  
+  if (viewsData) {
+    expect(viewsData).to.have.property('total');
+    expect(typeof viewsData.total).to.equal('number');
+  }
+  
+  // Comparer avec les données de test générées
+  const testProducts = JSON.parse(bru.getVar('test_products'));
+  const comparison = advancedUtils.compareResponses(
+    { products: testProducts },
+    { products: response.data?.products || [] },
+    ['products.length']
+  );
+  
+  utils.log('Data comparison results', {
+    testDataCount: testProducts.length,
+    responseDataCount: response.data?.products?.length || 0,
+    comparisonDifferences: comparison.differences.length
+  });
+  
+  // Sauvegarder les performances pour analyse
+  if (!global.sharedVars.performanceData) {
+    global.sharedVars.performanceData = [];
+  }
+  
+  global.sharedVars.performanceData.push({
+    endpoint: 'analytics',
+    responseTime: responseTime,
+    status: status,
+    timestamp: new Date().toISOString()
+  });
+  
+  // Analyser les performances si on a assez de données
+  if (global.sharedVars.performanceData.length >= 3) {
+    const perfAnalysis = advancedUtils.analyzePerformance(
+      global.sharedVars.performanceData
+    );
+    
+    utils.log('Performance analysis', perfAnalysis);
+    
+    // Validation des performances
+    if (perfAnalysis.average > 5000) {
+      console.warn(`Average response time is high: ${perfAnalysis.average}ms`);
+    }
+  }
+  
+  // Extraire et sauvegarder des métriques importantes
+  const importantMetrics = advancedUtils._.pick(processedData.extractedData, 
+    'totalSales', 'totalViews', 'revenue'
+  );
+  
+  bru.setEnvVar('last_analytics_metrics', JSON.stringify(importantMetrics));
+  
+  utils.log('Analytics completed successfully', {
+    metrics: importantMetrics,
+    performanceDataPoints: global.sharedVars.performanceData.length
+  });
+}

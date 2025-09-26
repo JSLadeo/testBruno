@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "Test Bruno API Collections",
+  "type": "collection",
+  "ignore": ["node_modules", ".env"],
+  "preRequestVars": {},
+  "clientCertificates": {
+    "certs": []
+  }
+}

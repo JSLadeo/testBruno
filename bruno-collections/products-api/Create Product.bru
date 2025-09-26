@@ -1,0 +1,88 @@
+meta {
+  name: Create Product
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_base_url}}/{{api_version}}/products
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "name": "{{product_name}}",
+    "description": "{{product_description}}",
+    "price": {{product_price}},
+    "category": "{{product_category}}",
+    "sku": "{{product_sku}}",
+    "stock": {{product_stock}}
+  }
+}
+
+script:pre-request {
+  // Utiliser TOUTES les fonctions de TOUTES les collections !
+  require('../../scripts/global-setup.js');
+  
+  // Générer des données de produit
+  const productName = `Test Product ${utils.generateUUID().substring(0, 8)}`;
+  const productPrice = parseFloat(utils.faker.price(10, 500));
+  const productSku = `SKU-${utils.generateMD5(productName).substring(0, 8).toUpperCase()}`;
+  const categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'];
+  const productCategory = categories[Math.floor(Math.random() * categories.length)];
+  const productStock = Math.floor(Math.random() * 100) + 1;
+  
+  const description = `${productCategory} product created at ${utils.formatDate(new Date())} - Request #${utils.incrementRequestCount()}`;
+  
+  // Définir toutes les variables
+  bru.setVar('product_name', productName);
+  bru.setVar('product_description', description);
+  bru.setVar('product_price', productPrice);
+  bru.setVar('product_category', productCategory);
+  bru.setVar('product_sku', productSku);
+  bru.setVar('product_stock', productStock);
+  
+  utils.log('Creating product', {
+    name: productName,
+    price: productPrice,
+    category: productCategory,
+    sku: productSku
+  });
+}
+
+script:post-response {
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  
+  utils.log('Product creation response', {
+    status: status,
+    productId: response?.id,
+    success: status === 201
+  });
+  
+  // Validation
+  expect(status).to.equal(201);
+  expect(response).to.have.property('id');
+  expect(response).to.have.property('name');
+  expect(response).to.have.property('price');
+  expect(response).to.have.property('sku');
+  
+  // Vérifications des données
+  expect(response.name).to.equal(bru.getVar('product_name'));
+  expect(response.price).to.equal(parseFloat(bru.getVar('product_price')));
+  expect(response.sku).to.equal(bru.getVar('product_sku'));
+  
+  // Sauvegarder l'ID du produit créé pour les autres tests
+  bru.setEnvVar('created_product_id', response.id);
+  bru.setEnvVar('created_product_sku', response.sku);
+  
+  utils.log('Product created successfully', {
+    id: response.id,
+    sku: response.sku
+  });
+}

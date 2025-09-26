@@ -1,0 +1,97 @@
+meta {
+  name: Search Products
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api_base_url}}/{{api_version}}/products/search?q={{search_query}}&category={{category_filter}}&min_price={{min_price}}&max_price={{max_price}}
+  body: none
+  auth: bearer
+}
+
+params:query {
+  q: {{search_query}}
+  category: {{category_filter}}
+  min_price: {{min_price}}
+  max_price: {{max_price}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+vars:pre-request {
+  search_query: Test
+  category_filter: Electronics
+  min_price: 10
+  max_price: 1000
+}
+
+script:pre-request {
+  // Accès aux fonctions partagées de TOUTES les collections
+  require('../../scripts/global-setup.js');
+  
+  const requestId = utils.generateUUID();
+  const requestCount = utils.incrementRequestCount();
+  
+  // Construire les paramètres de recherche
+  const searchParams = {
+    q: bru.getVar('search_query'),
+    category: bru.getVar('category_filter'),
+    min_price: bru.getVar('min_price'),
+    max_price: bru.getVar('max_price')
+  };
+  
+  utils.log('Searching products', {
+    requestId: requestId,
+    requestCount: requestCount,
+    params: searchParams
+  });
+  
+  // Sauvegarder l'ID de requête pour le tracking
+  bru.setVar('request_id', requestId);
+}
+
+script:post-response {
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  const responseTime = utils.measureResponseTime(Date.now() - 1000); // Approximation
+  
+  utils.log('Product search response', {
+    status: status,
+    productCount: response?.results?.length || 0,
+    responseTime: `${responseTime}ms`,
+    requestId: bru.getVar('request_id')
+  });
+  
+  // Validation
+  expect(status).to.equal(200);
+  expect(response).to.have.property('results');
+  expect(response.results).to.be.an('array');
+  
+  // Si on a des résultats, valider le format des prix
+  if (response.results && response.results.length > 0) {
+    response.results.forEach((product, index) => {
+      expect(product).to.have.property('id');
+      expect(product).to.have.property('name');
+      expect(product).to.have.property('price');
+      
+      // Vérifier que le prix est dans la fourchette demandée
+      const minPrice = parseFloat(bru.getVar('min_price'));
+      const maxPrice = parseFloat(bru.getVar('max_price'));
+      
+      expect(product.price).to.be.at.least(minPrice);
+      expect(product.price).to.be.at.most(maxPrice);
+      
+      utils.log(`Product ${index + 1}`, {
+        id: product.id,
+        name: product.name,
+        price: product.price
+      });
+    });
+    
+    // Sauvegarder le premier produit trouvé
+    bru.setEnvVar('found_product_id', response.results[0].id);
+  }
+}

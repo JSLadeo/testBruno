@@ -1,0 +1,52 @@
+{
+  "name": "bruno-test-project",
+  "version": "1.0.0",
+  "description": "Projet de test complet pour Bruno avec variables d'environnement, collections, et fonctions JavaScript partagées",
+  "main": "scripts/global-setup.js",
+  "scripts": {
+    "bruno": "bruno",
+    "test": "bruno run --env Development",
+    "test:staging": "bruno run --env Staging",
+    "test:prod": "bruno run --env Production",
+    "test:auth": "bruno run ./bruno-collections/auth-api --env Development",
+    "test:users": "bruno run ./bruno-collections/users-api --env Development",
+    "test:products": "bruno run ./bruno-collections/products-api --env Development"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "uuid": "^9.0.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "@usebruno/cli": "^1.0.0"
+  },
+  "keywords": [
+    "bruno",
+    "api-testing",
+    "javascript",
+    "environments",
+    "collections"
+  ],
+  "author": "Test User",
+  "license": "MIT",
+  "bruno": {
+    "version": "1",
+    "name": "Bruno Test Project",
+    "type": "collection",
+    "environments": [
+      {
+        "name": "Development",
+        "file": "./environments/Development.bru"
+      },
+      {
+        "name": "Staging",
+        "file": "./environments/Staging.bru"
+      },
+      {
+        "name": "Production",
+        "file": "./environments/Production.bru"
+      }
+    ]
+  }
+}

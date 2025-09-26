@@ -1,0 +1,76 @@
+meta {
+  name: Update User
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{api_base_url}}/{{api_version}}/users/{{user_id}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "name": "{{updated_name}}",
+    "phone": "{{updated_phone}}",
+    "bio": "{{updated_bio}}"
+  }
+}
+
+script:pre-request {
+  // Utiliser toutes nos fonctions partagées
+  require('../../scripts/global-setup.js');
+  
+  const userId = bru.getEnvVar('first_user_id');
+  if (!userId) {
+    throw new Error('No user ID available for update');
+  }
+  
+  // Générer de nouvelles données avec nos utilitaires
+  const newName = utils.faker.name();
+  const newPhone = utils.faker.phone();
+  const timestamp = utils.formatDate(new Date(), 'ISO');
+  const bio = `Updated profile at ${timestamp} - Request #${utils.incrementRequestCount()}`;
+  
+  bru.setVar('user_id', userId);
+  bru.setVar('updated_name', newName);
+  bru.setVar('updated_phone', newPhone);
+  bru.setVar('updated_bio', bio);
+  
+  utils.log('Updating user', {
+    userId: userId,
+    newName: newName,
+    newPhone: newPhone
+  });
+  
+  // Validation avant envoi
+  if (!utils.validatePhone(newPhone)) {
+    throw new Error('Generated phone number is invalid');
+  }
+}
+
+script:post-response {
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  
+  utils.log('User update response', {
+    status: status,
+    updated: status === 200
+  });
+  
+  // Validation
+  expect(status).to.equal(200);
+  expect(response).to.have.property('id');
+  expect(response.name).to.equal(bru.getVar('updated_name'));
+  expect(response.phone).to.equal(bru.getVar('updated_phone'));
+  
+  // Validation avec nos utilitaires
+  expect(utils.validatePhone(response.phone)).to.be.true;
+  
+  utils.log('User updated successfully', response);
+}

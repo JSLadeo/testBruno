@@ -1,0 +1,87 @@
+meta {
+  name: Get Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api_base_url}}/{{api_version}}/users?page={{page}}&limit={{limit}}&sort={{sort}}
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: {{page}}
+  limit: {{limit}}
+  sort: {{sort}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+vars:pre-request {
+  page: 1
+  limit: 10
+  sort: created_at:desc
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux - disponibles dans TOUTES les collections !
+  require('../../scripts/global-setup.js');
+  
+  // Vérifier l'authentification
+  const token = bru.getEnvVar('auth_token');
+  if (!token) {
+    throw new Error('Authentication required. Please login first.');
+  }
+  
+  // Construire l'URL avec les paramètres
+  const baseUrl = bru.getEnvVar('api_base_url');
+  const version = bru.getEnvVar('api_version');
+  const endpoint = 'users';
+  
+  const params = {
+    page: bru.getVar('page'),
+    limit: bru.getVar('limit'),
+    sort: bru.getVar('sort')
+  };
+  
+  const fullUrl = utils.buildURL(`${baseUrl}/${version}`, endpoint, params);
+  utils.log('Requesting users list', { url: fullUrl });
+  
+  utils.incrementRequestCount();
+}
+
+script:post-response {
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  
+  utils.log('Users list response', {
+    status: status,
+    userCount: response?.data?.length || 0
+  });
+  
+  // Validation
+  expect(status).to.be.oneOf([200, 201]);
+  expect(response).to.have.property('data');
+  expect(response.data).to.be.an('array');
+  
+  // Sauvegarder le premier utilisateur pour les tests suivants
+  if (response.data && response.data.length > 0) {
+    bru.setEnvVar('first_user_id', response.data[0].id);
+    utils.log('First user ID saved', response.data[0].id);
+  }
+  
+  // Validation des données utilisateur
+  if (response.data.length > 0) {
+    const firstUser = response.data[0];
+    expect(firstUser).to.have.property('id');
+    expect(firstUser).to.have.property('email');
+    
+    // Utiliser notre fonction de validation d'email
+    if (firstUser.email && !utils.validateEmail(firstUser.email)) {
+      throw new Error(`Invalid email format: ${firstUser.email}`);
+    }
+  }
+}

@@ -1,0 +1,76 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_base_url}}/{{api_version}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{test_email}}",
+    "password": "{{test_password}}"
+  }
+}
+
+vars:pre-request {
+  test_email: john.doe@example.com
+  test_password: password123
+  request_id: {{utils.generateUUID()}}
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('../../scripts/global-setup.js');
+  
+  // Incrémenter le compteur de requêtes
+  const requestCount = utils.incrementRequestCount();
+  utils.log(`Login request #${requestCount}`, {
+    email: bru.getVar('test_email'),
+    requestId: bru.getVar('request_id')
+  });
+  
+  // Générer un hash de la requête pour traçabilité
+  const requestHash = utils.generateMD5(
+    bru.getVar('test_email') + bru.getVar('test_password')
+  );
+  bru.setVar('request_hash', requestHash);
+}
+
+script:post-response {
+  // Parser la réponse
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  
+  utils.log('Login response received', {
+    status: bru.getResponseStatus(),
+    hasToken: !!response?.token
+  });
+  
+  // Vérifier le status
+  if (!utils.validateStatus(bru.getResponseStatus(), [200, 201])) {
+    throw new Error(`Login failed with status ${bru.getResponseStatus()}`);
+  }
+  
+  // Sauvegarder le token si présent
+  if (response && response.token) {
+    utils.setAuthToken(response.token);
+    bru.setEnvVar('auth_token', response.token);
+    utils.log('Auth token saved successfully');
+  }
+  
+  // Sauvegarder les informations utilisateur
+  if (response && response.user) {
+    utils.setCurrentUser(response.user);
+    bru.setEnvVar('current_user_id', response.user.id);
+  }
+  
+  // Tests de validation
+  expect(bru.getResponseStatus()).to.equal(200);
+  expect(response).to.have.property('token');
+  expect(response).to.have.property('user');
+  expect(response.user).to.have.property('id');
+}

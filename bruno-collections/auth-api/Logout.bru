@@ -1,0 +1,54 @@
+meta {
+  name: Logout
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_base_url}}/{{api_version}}/auth/logout
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('../../scripts/global-setup.js');
+  
+  // Vérifier qu'on a un token
+  const token = bru.getEnvVar('auth_token');
+  if (!token) {
+    throw new Error('No auth token available. Please login first.');
+  }
+  
+  utils.log('Logging out user', {
+    hasToken: !!token,
+    requestCount: utils.incrementRequestCount()
+  });
+}
+
+script:post-response {
+  const status = bru.getResponseStatus();
+  
+  utils.log('Logout response', { status: status });
+  
+  // Nettoyer les variables d'auth même en cas d'erreur
+  bru.setEnvVar('auth_token', '');
+  bru.setEnvVar('current_user_id', '');
+  
+  // Nettoyer les variables globales
+  global.sharedVars.authToken = null;
+  global.sharedVars.currentUser = null;
+  
+  utils.log('Auth variables cleared');
+  
+  // Validation
+  if (utils.validateStatus(status, [200, 204])) {
+    utils.log('Logout successful');
+  } else {
+    utils.log('Logout failed but tokens cleared anyway');
+  }
+}

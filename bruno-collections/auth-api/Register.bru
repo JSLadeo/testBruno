@@ -1,0 +1,77 @@
+meta {
+  name: Register
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_base_url}}/{{api_version}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{user_name}}",
+    "email": "{{user_email}}",
+    "password": "{{user_password}}",
+    "phone": "{{user_phone}}"
+  }
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('../../scripts/global-setup.js');
+  
+  // Générer des données de test aléatoires
+  const userName = utils.faker.name();
+  const userEmail = utils.faker.email(userName);
+  const userPhone = utils.faker.phone();
+  const userPassword = 'TestPass123!';
+  
+  // Valider les données générées
+  if (!utils.validateEmail(userEmail)) {
+    throw new Error('Generated email is invalid');
+  }
+  
+  if (!utils.validatePhone(userPhone)) {
+    throw new Error('Generated phone is invalid');
+  }
+  
+  // Définir les variables
+  bru.setVar('user_name', userName);
+  bru.setVar('user_email', userEmail);
+  bru.setVar('user_password', userPassword);
+  bru.setVar('user_phone', userPhone);
+  
+  utils.log('Registration data generated', {
+    name: userName,
+    email: userEmail,
+    phone: userPhone
+  });
+  
+  utils.incrementRequestCount();
+}
+
+script:post-response {
+  const response = utils.parseJSONResponse(bru.getResponseBody());
+  const status = bru.getResponseStatus();
+  
+  utils.log('Registration response', {
+    status: status,
+    success: status >= 200 && status < 300
+  });
+  
+  // Validation des réponses
+  if (utils.validateStatus(status, [201, 200])) {
+    expect(response).to.have.property('user');
+    expect(response.user).to.have.property('id');
+    expect(response.user.email).to.equal(bru.getVar('user_email'));
+    
+    // Sauvegarder l'ID utilisateur créé
+    bru.setEnvVar('registered_user_id', response.user.id);
+    utils.log('User registered successfully', response.user);
+  } else {
+    utils.log('Registration failed', response);
+  }
+}

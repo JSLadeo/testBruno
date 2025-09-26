@@ -1,0 +1,11 @@
+vars {
+  api_base_url: https://api.example.com
+  api_version: v1
+  timeout: 15000
+  debug_mode: false
+  database_url: prod-db.example.com:5432
+  redis_url: prod-redis.example.com:6379
+  jwt_secret: {{process.env.JWT_SECRET}}
+  max_retries: 10
+  rate_limit: 500
+}

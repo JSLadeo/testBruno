@@ -86,3 +86,15 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Bruno specific
+.bruno/
+bruno_*.log
+*.bruno.log
+
+# Environment secrets
+*.secrets.bru
+
+# Test results
+test-results/
+coverage/
