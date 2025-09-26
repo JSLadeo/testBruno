@@ -1,0 +1,23 @@
+meta {
+  name: Simple Test
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://httpbin.org/get
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  console.log('Simple test starting...');
+  console.log('API Base URL:', bru.getEnvVar('api_base_url'));
+  console.log('API Version:', bru.getEnvVar('api_version'));
+}
+
+script:post-response {
+  console.log('Response received!');
+  console.log('Status:', res.getStatus());
+  console.log('Body length:', res.getBody().length);
+}
