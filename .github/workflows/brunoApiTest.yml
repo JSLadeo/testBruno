@@ -66,15 +66,7 @@ jobs:
       - name: Install Bruno CLI
         run: npm install -g @usebruno/cli
 
-      - name: Create sample data files if missing
-        run: |
-          mkdir -p data
-          echo "name,email,age,country" > data/users.csv
-          echo "John Doe,john@example.com,30,France" >> data/users.csv
-          echo '[{"name":"Test Product","category":"Electronics","price":99.99,"sku":"TEST-001","stock":10}]' > data/products.json
-          echo '[{"scenario":"Test Login","email":"test@example.com","password":"test123","expectedStatus":200,"description":"Test login scenario"}]' > data/test-scenarios.json
-
-      - name: Verify data files
+      - name: Verify data files exist
         run: |
           ls -la data/
           cat data/users.csv
