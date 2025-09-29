@@ -73,10 +73,21 @@ jobs:
           cat data/products.json
 
       - name: Run CSV Data Tests
-        run: npm run test:data-csv || echo "CSV tests failed, continuing..."
+        run: npx @usebruno/cli run bruno-collections/data-driven-api/CreateUsersFromCSV.bru -r --env Development --csv-file-path data/users.csv --reporter-html auth-results.html|| echo "CSV tests failed, continuing..."
 
       - name: Run JSON Data Tests
-        run: npm run test:data-json || echo "JSON tests failed, continuing..."
+        run: npx @usebruno/cli run bruno-collections/data-driven-api/CreateProductsFromJSON.bru -r --env Development --json-file-path data/products.json --reporter-html auth-results.html || echo "JSON tests failed, continuing..."
 
       - name: Run Scenario Tests
-        run: npm run test:scenarios || echo "Scenario tests failed, continuing..."
+        run: npx @usebruno/cli run bruno-collections/data-driven-api/LoginScenariosFromJSON.bru -r --env Development --json-file-path data/test-scenarios.json --reporter-html auth-results.html || echo "Scenario tests failed, continuing..."
+
+      - name: Generate Combined Report
+        run: npx @usebruno/cli run bruno-collections/data-driven-api -r --env Development --reporter-json results.json
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-driven-api-test-results
+          path: |
+            *-results.html
