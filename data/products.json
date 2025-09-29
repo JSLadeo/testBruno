@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Laptop Pro 15",
+    "category": "Electronics",
+    "price": 1299.99,
+    "sku": "LAP-PRO-15",
+    "stock": 25
+  },
+  {
+    "name": "Wireless Mouse",
+    "category": "Electronics",
+    "price": 29.99,
+    "sku": "MOUSE-WL-01",
+    "stock": 100
+  },
+  {
+    "name": "Coffee Mug",
+    "category": "Home",
+    "price": 12.5,
+    "sku": "MUG-COF-01",
+    "stock": 50
+  },
+  {
+    "name": "Running Shoes",
+    "category": "Sports",
+    "price": 89.99,
+    "sku": "SHOE-RUN-01",
+    "stock": 30
+  }
+]

@@ -1,0 +1,86 @@
+meta {
+  name: Create Users from CSV
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://httpbin.org/post
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "email": "{{email}}",
+    "age": {{age}},
+    "country": "{{country}}",
+    "created_at": "{{timestamp}}"
+  }
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('./global-utils.js');
+  
+  // Ajouter un timestamp pour chaque utilisateur
+  const timestamp = new Date().toISOString();
+  bru.setVar('timestamp', timestamp);
+  
+  // Debug: afficher toutes les variables disponibles
+  console.log('Available variables:');
+  console.log('name:', bru.getVar('name'));
+  console.log('email:', bru.getVar('email'));
+  console.log('age:', bru.getVar('age'));
+  console.log('country:', bru.getVar('country'));
+  
+  const userName = bru.getVar('name') || 'Unknown User';
+  const userCountry = bru.getVar('country') || 'Unknown Country';
+  
+  console.log('Creating user: ' + userName + ' from ' + userCountry);
+  
+  utils.log('CSV User Creation', {
+    name: userName,
+    email: bru.getVar('email'),
+    age: bru.getVar('age'),
+    country: userCountry
+  });
+}
+
+script:post-response {
+  console.log('User creation response received');
+  console.log('Status:', res.getStatus());
+  
+  if (res.getStatus() === 200) {
+    const userName = bru.getVar('name');
+    const userCountry = bru.getVar('country');
+    
+    console.log('User ' + userName + ' from ' + userCountry + ' created successfully!');
+    
+    // Simuler la sauvegarde des IDs utilisateurs créés
+    const userId = 'user-' + Math.floor(Math.random() * 1000);
+    const safeName = userName ? userName.replace(' ', '_') : 'Unknown';
+    bru.setEnvVar('created_user_' + safeName, userId);
+    
+    utils.log('User created', {
+      id: userId,
+      name: userName,
+      country: userCountry
+    });
+  } else {
+    console.log('Failed to create user ' + bru.getVar('name'));
+  }
+}
+
+tests {
+  test('Status should be 200', function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test('Response should contain user data', function() {
+    const responseData = res.getBody();
+    expect(responseData.json.name).to.equal(bru.getVar('name'));
+    expect(responseData.json.email).to.equal(bru.getVar('email'));
+  });
+}

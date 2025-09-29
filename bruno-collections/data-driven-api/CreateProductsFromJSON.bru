@@ -1,0 +1,98 @@
+meta {
+  name: Create Products from JSON
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://httpbin.org/post
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "category": "{{category}}",
+    "price": {{price}},
+    "sku": "{{sku}}",
+    "stock": {{stock}},
+    "created_at": "{{timestamp}}",
+    "description": "{{description}}"
+  }
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('./global-utils.js');
+  
+  // Générer des données supplémentaires
+  const timestamp = new Date().toISOString();
+  const description = bru.getVar('category') + ' product - ' + bru.getVar('name') + ' (' + bru.getVar('sku') + ')';
+  
+  bru.setVar('timestamp', timestamp);
+  bru.setVar('description', description);
+  
+  console.log('Creating product: ' + bru.getVar('name') + ' - ' + bru.getVar('category'));
+  console.log('Price: $' + bru.getVar('price') + ', Stock: ' + bru.getVar('stock'));
+  
+  utils.log('JSON Product Creation', {
+    name: bru.getVar('name'),
+    category: bru.getVar('category'),
+    price: bru.getVar('price'),
+    sku: bru.getVar('sku'),
+    stock: bru.getVar('stock')
+  });
+}
+
+script:post-response {
+  // Charger les utilitaires globaux aussi dans post-response
+  require('./global-utils.js');
+  
+  console.log('Product creation response received');
+  console.log('Status:', res.getStatus());
+  
+  if (res.getStatus() === 200) {
+    const productName = bru.getVar('name');
+    const productSku = bru.getVar('sku');
+    
+    console.log('✅ Product ' + productName + ' (' + productSku + ') created successfully!');
+    
+    // Simuler la sauvegarde des IDs produits créés
+    const productId = 'prod-' + Math.floor(Math.random() * 1000);
+    bru.setEnvVar('created_product_' + productSku, productId);
+    
+    utils.log('Product created', {
+      id: productId,
+      name: productName,
+      sku: productSku,
+      category: bru.getVar('category'),
+      price: bru.getVar('price')
+    });
+  } else {
+    console.log('❌ Failed to create product ' + bru.getVar('name'));
+  }
+}
+
+tests {
+  test('Status should be 200', function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test('Response should contain product data', function() {
+    const responseData = res.getBody();
+    expect(responseData.json.name).to.equal(bru.getVar('name'));
+    expect(responseData.json.sku).to.equal(bru.getVar('sku'));
+    expect(responseData.json.price).to.equal(parseFloat(bru.getVar('price')));
+  });
+  
+  test('Stock should be a positive number', function() {
+    const stock = parseInt(bru.getVar('stock'));
+    expect(stock).to.be.greaterThan(0);
+  });
+  
+  test('Product should have valid category', function() {
+    const category = bru.getVar('category');
+    expect(category).to.be.oneOf(['Electronics', 'Home', 'Sports', 'Books', 'Clothing']);
+  });
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "Login Success",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "expectedStatus": 200,
+    "description": "Test successful login with valid credentials"
+  },
+  {
+    "scenario": "Login Invalid Email",
+    "email": "invalid-email",
+    "password": "admin123",
+    "expectedStatus": 400,
+    "description": "Test login with invalid email format"
+  },
+  {
+    "scenario": "Login Wrong Password",
+    "email": "admin@example.com",
+    "password": "wrong-password",
+    "expectedStatus": 401,
+    "description": "Test login with wrong password"
+  },
+  {
+    "scenario": "Login Empty Fields",
+    "email": "",
+    "password": "",
+    "expectedStatus": 400,
+    "description": "Test login with empty email and password"
+  }
+]

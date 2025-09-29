@@ -1,0 +1,111 @@
+meta {
+  name: Login Scenarios from JSON
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://httpbin.org/post
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "scenario": "{{scenario}}",
+    "timestamp": "{{timestamp}}",
+    "expectedStatus": {{expectedStatus}}
+  }
+}
+
+script:pre-request {
+  // Charger les utilitaires globaux
+  require('./global-utils.js');
+  
+  const timestamp = new Date().toISOString();
+  bru.setVar('timestamp', timestamp);
+  
+  console.log('🧪 Testing scenario: ' + bru.getVar('scenario'));
+  console.log('📧 Email: ' + bru.getVar('email'));
+  console.log('📝 Description: ' + bru.getVar('description'));
+  console.log('🎯 Expected Status: ' + bru.getVar('expectedStatus'));
+  
+  utils.log('Login Scenario Test', {
+    scenario: bru.getVar('scenario'),
+    email: bru.getVar('email'),
+    description: bru.getVar('description'),
+    expectedStatus: bru.getVar('expectedStatus')
+  });
+}
+
+script:post-response {
+  // Charger les utilitaires globaux aussi dans post-response
+  require('./global-utils.js');
+  
+  const scenario = bru.getVar('scenario');
+  const expectedStatus = parseInt(bru.getVar('expectedStatus'));
+  const actualStatus = res.getStatus();
+  
+  console.log('📊 Scenario Results:');
+  console.log('   Scenario: ' + scenario);
+  console.log('   Expected Status: ' + expectedStatus);
+  console.log('   Actual Status: ' + actualStatus);
+  
+  // Pour httpbin.org qui retourne toujours 200, on simule différents résultats
+  const isSuccess = actualStatus === 200; // httpbin success
+  const simulatedSuccess = expectedStatus === 200 ? isSuccess : !isSuccess;
+  
+  if (simulatedSuccess) {
+    console.log('✅ Scenario "' + scenario + '" passed as expected');
+  } else {
+    console.log('⚠️ Scenario "' + scenario + '" - Status mismatch (simulated)');
+  }
+  
+  utils.log('Scenario Result', {
+    scenario: scenario,
+    expected: expectedStatus,
+    actual: actualStatus,
+    success: simulatedSuccess,
+    description: bru.getVar('description')
+  });
+}
+
+tests {
+  test('Response should be successful from httpbin', function() {
+    // httpbin.org always returns 200, so we test for that
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test('Request should contain scenario data', function() {
+    const responseData = res.getBody();
+    expect(responseData.json.scenario).to.equal(bru.getVar('scenario'));
+    expect(responseData.json.email).to.equal(bru.getVar('email'));
+  });
+  
+  test('Scenario should have description', function() {
+    const description = bru.getVar('description');
+    expect(description).to.not.be.empty;
+    expect(description).to.contain('Test');
+  });
+  
+  test('Expected status should be valid HTTP code', function() {
+    const expectedStatus = parseInt(bru.getVar('expectedStatus'));
+    expect(expectedStatus).to.be.within(100, 599);
+  });
+  
+  test('Email format should match scenario expectation', function() {
+    const email = bru.getVar('email');
+    const scenario = bru.getVar('scenario');
+    const expectedStatus = parseInt(bru.getVar('expectedStatus'));
+    
+    if (expectedStatus === 200) {
+      // Pour les scénarios de succès, email doit être valide
+      expect(email).to.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+    } else if (scenario.includes('Invalid Email') || scenario.includes('Empty Fields')) {
+      // Pour les scénarios d'échec liés à l'email, on accepte les emails invalides
+      expect(email).to.be.a('string'); // Juste vérifier que c'est une chaîne
+    }
+  });
+}
