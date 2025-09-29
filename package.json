@@ -6,6 +6,7 @@
   "scripts": {
     "bruno": "npx @usebruno/cli",
     "test": "npx @usebruno/cli run bruno-collections -r --env Development",
+    "test:ci": "npx @usebruno/cli run bruno-collections -r --env Development --reporter-html results.html",
     "test:staging": "npx @usebruno/cli run bruno-collections -r --env Staging",
     "test:prod": "npx @usebruno/cli run bruno-collections -r --env Production",
     "test:auth": "npx @usebruno/cli run bruno-collections/auth-api/Login.bru -r --env Development",
