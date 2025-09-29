@@ -8,9 +8,12 @@
     "test": "npx @usebruno/cli run bruno-collections -r --env Development",
     "test:staging": "npx @usebruno/cli run bruno-collections -r --env Staging",
     "test:prod": "npx @usebruno/cli run bruno-collections -r --env Production",
-    "test:auth": "npx @usebruno/cli run bruno-collections/auth-api -r --env Development",
+    "test:auth": "npx @usebruno/cli run bruno-collections/auth-api/Login.bru -r --env Development",
     "test:users": "npx @usebruno/cli run bruno-collections/users-api --env Development",
-    "test:products": "npx @usebruno/cli run bruno-collections/products-api --env Development"
+    "test:products": "npx @usebruno/cli run bruno-collections/products-api --env Development",
+    "test:report": "npx @usebruno/cli run bruno-collections -r --env Development --reporter-html report.html",
+    "test:junit": "npx @usebruno/cli run bruno-collections -r --env Development --reporter-junit junit.xml",
+    "test:json": "npx @usebruno/cli run bruno-collections -r --env Development --reporter-json report.json"
   },
   "dependencies": {
     "crypto": "^1.0.1",

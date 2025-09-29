@@ -1,0 +1,515 @@
+[
+  {
+    "iterationIndex": 0,
+    "summary": {
+      "totalRequests": 10,
+      "passedRequests": 10,
+      "failedRequests": 0,
+      "skippedRequests": 0,
+      "totalAssertions": 0,
+      "passedAssertions": 0,
+      "failedAssertions": 0,
+      "totalTests": 0,
+      "passedTests": 0,
+      "failedTests": 0
+    },
+    "results": [
+      {
+        "test": {
+          "filename": "bruno-collections\\auth-api\\Login.bru"
+        },
+        "request": {
+          "method": "POST",
+          "url": "https://httpbin.org/post",
+          "headers": {
+            "content-type": "application/json"
+          },
+          "data": "{\r\n  \"email\": \"{{test_email}}\",\r\n  \"password\": \"{{test_password}}\"\r\n}"
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:36:56 GMT",
+            "content-type": "application/json",
+            "content-length": "681",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "data": "{\r\n  \"email\": \"{{test_email}}\",\r\n  \"password\": \"{{test_password}}\"\r\n}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Content-Length": "69",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138637765",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da5334-0a149f9a2b573e1444410108"
+            },
+            "json": {
+              "email": "{{test_email}}",
+              "password": "{{test_password}}"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/post"
+          },
+          "responseTime": 3586
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 3.633893,
+        "suitename": "bruno-collections\\auth-api\\Login",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\auth-api\\Simple Test.bru"
+        },
+        "request": {
+          "method": "GET",
+          "url": "https://httpbin.org/get",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:36:56 GMT",
+            "content-type": "application/json",
+            "content-length": "395",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138641379",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da5338-0ae8f25c17d45aa24eb57041"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/get"
+          },
+          "responseTime": 469
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 0.4809473,
+        "suitename": "bruno-collections\\auth-api\\Simple Test",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\auth-api\\Register.bru"
+        },
+        "request": {
+          "method": "POST",
+          "url": "https://httpbin.org/post",
+          "headers": {
+            "content-type": "application/json"
+          },
+          "data": "{\r\n  \"name\": \"Alice\",\r\n  \"email\": \"alice@example.com\",\r\n  \"password\": \"TestPass123!\",\r\n  \"phone\": \"+33952658305\"\r\n}"
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:36:57 GMT",
+            "content-type": "application/json",
+            "content-length": "790",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "data": "{\r\n  \"name\": \"Alice\",\r\n  \"email\": \"alice@example.com\",\r\n  \"password\": \"TestPass123!\",\r\n  \"phone\": \"+33952658305\"\r\n}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Content-Length": "115",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138641878",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da5338-2978c1d02479394d746df3fa"
+            },
+            "json": {
+              "email": "alice@example.com",
+              "name": "Alice",
+              "password": "TestPass123!",
+              "phone": "+33952658305"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/post"
+          },
+          "responseTime": 1088
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 1.1195001,
+        "suitename": "bruno-collections\\auth-api\\Register",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\auth-api\\Logout.bru"
+        },
+        "request": {
+          "method": "POST",
+          "url": "https://httpbin.org/post",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:36:59 GMT",
+            "content-type": "application/json",
+            "content-length": "545",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "data": "",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Content-Length": "0",
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138642978",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da5339-0a17ddea19d9ec11180912c1"
+            },
+            "json": null,
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/post"
+          },
+          "responseTime": 1480
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 1.4905021,
+        "suitename": "bruno-collections\\auth-api\\Logout",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\products-api\\Create Product.bru"
+        },
+        "request": {
+          "method": "POST",
+          "url": "https://httpbin.org/post",
+          "headers": {
+            "content-type": "application/json"
+          },
+          "data": "{\r\n  \"name\": \"Test Product 41936bc8\",\r\n  \"description\": \"Clothing product created at 2025-09-29T09:37:24.471Z\",\r\n  \"price\": 415.96,\r\n  \"category\": \"Clothing\",\r\n  \"sku\": \"SKU-63FFE329\",\r\n  \"stock\": 12\r\n}"
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:37:00 GMT",
+            "content-type": "application/json",
+            "content-length": "976",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "data": "{\r\n  \"name\": \"Test Product 41936bc8\",\r\n  \"description\": \"Clothing product created at 2025-09-29T09:37:24.471Z\",\r\n  \"price\": 415.96,\r\n  \"category\": \"Clothing\",\r\n  \"sku\": \"SKU-63FFE329\",\r\n  \"stock\": 12\r\n}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Content-Length": "202",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138644474",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da533b-772589193c8ae4106f5e1bfa"
+            },
+            "json": {
+              "category": "Clothing",
+              "description": "Clothing product created at 2025-09-29T09:37:24.471Z",
+              "name": "Test Product 41936bc8",
+              "price": 415.96,
+              "sku": "SKU-63FFE329",
+              "stock": 12
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/post"
+          },
+          "responseTime": 1133
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 1.1505266,
+        "suitename": "bruno-collections\\products-api\\Create Product",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\products-api\\Search Products.bru"
+        },
+        "request": {
+          "method": "GET",
+          "url": "https://httpbin.org/get?q=Test&category=Electronics&min_price=10&max_price=1000",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:37:01 GMT",
+            "content-type": "application/json",
+            "content-length": "552",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {
+              "category": "Electronics",
+              "max_price": "1000",
+              "min_price": "10",
+              "q": "Test"
+            },
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138645623",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da533c-632b8cf151b35f9555d58d2b"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/get?q=Test&category=Electronics&min_price=10&max_price=1000"
+          },
+          "responseTime": 588
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 0.6025824,
+        "suitename": "bruno-collections\\products-api\\Search Products",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\products-api\\Advanced Analytics.bru"
+        },
+        "request": {
+          "method": "GET",
+          "url": "https://httpbin.org/get?period=30d&metrics=sales,views,revenue",
+          "headers": {}
+        },
+        "response": {
+          "status": 502,
+          "statusText": "Bad Gateway",
+          "headers": {
+            "server": "awselb/2.0",
+            "date": "Mon, 29 Sep 2025 09:37:01 GMT",
+            "content-type": "text/html",
+            "content-length": "122",
+            "connection": "keep-alive"
+          },
+          "data": "response content redacted",
+          "responseTime": 496
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 0.5085671,
+        "suitename": "bruno-collections\\products-api\\Advanced Analytics",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\users-api\\Get Users.bru"
+        },
+        "request": {
+          "method": "GET",
+          "url": "https://httpbin.org/get?page=1&limit=10&sort=created_at:desc",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:37:02 GMT",
+            "content-type": "application/json",
+            "content-length": "503",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {
+              "limit": "10",
+              "page": "1",
+              "sort": "created_at:desc"
+            },
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138646730",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da533d-155d253c597186d11d6087ca"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/get?page=1&limit=10&sort=created_at:desc"
+          },
+          "responseTime": 1283
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 1.2928809,
+        "suitename": "bruno-collections\\users-api\\Get Users",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\users-api\\Get User By ID.bru"
+        },
+        "request": {
+          "method": "GET",
+          "url": "https://httpbin.org/get",
+          "headers": {}
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:37:05 GMT",
+            "content-type": "application/json",
+            "content-length": "395",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138648025",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da533e-02ed866b51a739c105314dc9"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/get"
+          },
+          "responseTime": 2291
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 2.3034914,
+        "suitename": "bruno-collections\\users-api\\Get User By ID",
+        "iterationIndex": 0
+      },
+      {
+        "test": {
+          "filename": "bruno-collections\\users-api\\Update User.bru"
+        },
+        "request": {
+          "method": "PUT",
+          "url": "https://httpbin.org/put",
+          "headers": {
+            "content-type": "application/json"
+          },
+          "data": "{\r\n  \"name\": \"John\",\r\n  \"phone\": \"+33211788531\",\r\n  \"bio\": \"Updated profile at 2025-09-29T09:37:30.327Z\"\r\n}"
+        },
+        "response": {
+          "status": 200,
+          "statusText": "OK",
+          "headers": {
+            "date": "Mon, 29 Sep 2025 09:37:06 GMT",
+            "content-type": "application/json",
+            "content-length": "765",
+            "connection": "keep-alive",
+            "server": "gunicorn/19.9.0",
+            "access-control-allow-origin": "*",
+            "access-control-allow-credentials": "true"
+          },
+          "data": {
+            "args": {},
+            "data": "{\r\n  \"name\": \"John\",\r\n  \"phone\": \"+33211788531\",\r\n  \"bio\": \"Updated profile at 2025-09-29T09:37:30.327Z\"\r\n}",
+            "files": {},
+            "form": {},
+            "headers": {
+              "Accept": "application/json, text/plain, */*",
+              "Accept-Encoding": "gzip, compress, deflate, br",
+              "Content-Length": "107",
+              "Content-Type": "application/json",
+              "Host": "httpbin.org",
+              "Request-Start-Time": "1759138650330",
+              "User-Agent": "bruno-runtime/1.40.0",
+              "X-Amzn-Trace-Id": "Root=1-68da5341-137c1f77277e75472313df2a"
+            },
+            "json": {
+              "bio": "Updated profile at 2025-09-29T09:37:30.327Z",
+              "name": "John",
+              "phone": "+33211788531"
+            },
+            "origin": "185.126.231.182",
+            "url": "https://httpbin.org/put"
+          },
+          "responseTime": 1209
+        },
+        "error": null,
+        "assertionResults": [],
+        "testResults": [],
+        "shouldStopRunnerExecution": false,
+        "runtime": 1.2226933,
+        "suitename": "bruno-collections\\users-api\\Update User",
+        "iterationIndex": 0
+      }
+    ]
+  }
+]

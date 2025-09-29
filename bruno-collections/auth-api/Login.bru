@@ -25,8 +25,8 @@ vars:pre-request {
 
 script:pre-request {
   // Définir les variables de test
-  bru.setVar('test_email', 'john.doe@example.com');
-  bru.setVar('test_password', 'password123');
+  bru.setVar('test_email', '{{test_email}}');
+  bru.setVar('test_password', '{{test_password}}');
   bru.setVar('request_id', 'login-' + Date.now());
   
   console.log('Login request starting...');
@@ -37,6 +37,7 @@ script:pre-request {
 script:post-response {
   console.log('Login response received');
   console.log('Status:', res.getStatus());
+  console.log('Email:', bru.getVar('test_email'));
   
   // Parser la réponse JSON d'httpbin.org
   let response;

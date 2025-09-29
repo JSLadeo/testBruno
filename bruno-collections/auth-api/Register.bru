@@ -22,7 +22,7 @@ body:json {
 script:pre-request {
   // Charger les utilitaires globaux
   require('./global-utils.js');
-  
+  require('./scripts/global-setup.js');
   // Générer des données de test aléatoires
   const userName = utils.faker.name();
   const userEmail = utils.faker.email(userName);
