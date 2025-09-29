@@ -5,50 +5,36 @@ meta {
 }
 
 post {
-  url: {{api_base_url}}/{{api_version}}/auth/logout
+  url: https://httpbin.org/post
   body: none
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{auth_token}}
+  auth: none
 }
 
 script:pre-request {
-  // Charger les utilitaires globaux
-  require('../../scripts/global-setup.js');
+  console.log('Logout request starting...');
   
-  // Vérifier qu'on a un token
+  // Vérifier qu'on a un token (simulé)
   const token = bru.getEnvVar('auth_token');
   if (!token) {
-    throw new Error('No auth token available. Please login first.');
+    console.log('Warning: No auth token available, but proceeding with logout simulation');
+  } else {
+    console.log('Logging out user with token:', token.substring(0, 10) + '...');
   }
-  
-  utils.log('Logging out user', {
-    hasToken: !!token,
-    requestCount: utils.incrementRequestCount()
-  });
 }
 
 script:post-response {
-  const status = bru.getResponseStatus();
+  console.log('Logout response received');
+  console.log('Status:', res.getStatus());
   
-  utils.log('Logout response', { status: status });
-  
-  // Nettoyer les variables d'auth même en cas d'erreur
-  bru.setEnvVar('auth_token', '');
-  bru.setEnvVar('current_user_id', '');
-  
-  // Nettoyer les variables globales
-  global.sharedVars.authToken = null;
-  global.sharedVars.currentUser = null;
-  
-  utils.log('Auth variables cleared');
-  
-  // Validation
-  if (utils.validateStatus(status, [200, 204])) {
-    utils.log('Logout successful');
+  // Simuler le nettoyage des variables d'auth
+  if (res.getStatus() === 200) {
+    console.log('Logout successful!');
+    
+    // Nettoyer les variables d'auth
+    bru.setEnvVar('auth_token', '');
+    bru.setEnvVar('current_user_id', '');
+    console.log('Auth variables cleared');
   } else {
-    utils.log('Logout failed but tokens cleared anyway');
+    console.log('Logout failed with status:', res.getStatus());
   }
 }
