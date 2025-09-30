@@ -13,7 +13,7 @@
     "test:auth": "npx @usebruno/cli run bruno-collections/auth-api/Login.bru -r --env Development",
     "test:users": "npx @usebruno/cli run bruno-collections/users-api --env Development",
     "test:products": "npx @usebruno/cli run bruno-collections/products-api --env Development",
-    "test:data-csv": "npx @usebruno/cli run bruno-collections/data-driven-api/CreateUsersFromCSV.bru --env Development --csv-file-path data/users.csv",
+    "test:data-csv": "npx @usebruno/cli run bruno-collections/data-driven-api/CreateUsersFromCSV.bru --env Development --csv-file-path data/users.csv --reporter-html csv-results.html",
     "test:data-json": "npx @usebruno/cli run bruno-collections/data-driven-api/CreateProductsFromJSON.bru --env Development --json-file-path data/products.json",
     "test:scenarios": "npx @usebruno/cli run bruno-collections/data-driven-api/LoginScenariosFromJSON.bru --env Development --json-file-path data/test-scenarios.json",
     "test:data-all": "npx @usebruno/cli run bruno-collections/data-driven-api -r --env Development",

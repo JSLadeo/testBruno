@@ -49,6 +49,8 @@ script:pre-request {
 }
 
 script:post-response {
+  // Charger les utilitaires globaux
+  require('./global-utils.js');
   console.log('User creation response received');
   console.log('Status:', res.getStatus());
   
@@ -60,14 +62,18 @@ script:post-response {
     
     // Simuler la sauvegarde des IDs utilisateurs créés
     const userId = 'user-' + Math.floor(Math.random() * 1000);
+    console.log('after userId')
     const safeName = userName ? userName.replace(' ', '_') : 'Unknown';
+    console.log('after safeName')
     bru.setEnvVar('created_user_' + safeName, userId);
+    console.log('after setEnvVar created user')
     
     utils.log('User created', {
       id: userId,
       name: userName,
       country: userCountry
     });
+    console.log('after utils log user created')
   } else {
     console.log('Failed to create user ' + bru.getVar('name'));
   }

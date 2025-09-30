@@ -70,7 +70,7 @@ jobs:
           cat data/products.json
 
       - name: Run CSV Data Tests
-        run: npx @usebruno/cli run bruno-collections/data-driven-api/CreateUsersFromCSV.bru -r --env Development --csv-file-path data/users.csv --reporter-html csv-results.html|| echo "CSV tests failed, continuing..."
+        run: npx @usebruno/cli run bruno-collections/data-driven-api/CreateUsersFromCSV.bru -r --env Development --csv-file-path data/users.csv --reporter-html csv-results.html || echo "CSV tests failed, continuing..."
 
       - name: Run JSON Data Tests
         run: npx @usebruno/cli run bruno-collections/data-driven-api/CreateProductsFromJSON.bru -r --env Development --json-file-path data/products.json --reporter-html productData-results.html || echo "JSON tests failed, continuing..."
